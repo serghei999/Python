@@ -1,0 +1,44 @@
+import pandas_datareader as pdr
+import datetime 
+
+import quandl 
+aapl = quandl.get("WIKI/AAPL", start_date="2016-10-01", end_date="2019-01-01")
+print(aapl)
+aapl.describe()
+
+# Import Matplotlib's `pyplot` module as `plt`
+import matplotlib.pyplot as plt
+
+# Plot the closing prices for `aapl`
+aapl['Close'].plot(grid=True)
+
+# Show the plot
+plt.show()
+
+# Import `numpy` as `np`
+import numpy as np
+
+# Assign `Adj Close` to `daily_close`
+daily_close = aapl[['Adj. Close']]
+
+# Daily returns
+daily_pct_change = daily_close.pct_change()
+
+# Replace NA values with 0
+daily_pct_change.fillna(0, inplace=True)
+
+# Inspect daily returns
+print(daily_pct_change)
+
+# Daily log returns
+daily_log_returns = np.log(daily_close.pct_change()+1)
+
+# Print daily log returns
+print(daily_log_returns)
+
+
+# Daily returns
+daily_pct_change = daily_close / daily_close.shift(1) - 1
+
+# Print `daily_pct_change`
+print("daily_pct_change : ",daily_pct_change)
