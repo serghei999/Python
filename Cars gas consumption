@@ -1,0 +1,44 @@
+import os
+os.chdir("D:\Projects\Python\Scripts old")
+import pandas
+cars=pandas.read_csv("cars.csv", sep=";", header=0, index_col=0)
+print(cars.shape)
+n=cars.shape[0]
+p=cars.shape[1]-1
+print(cars.dtypes)
+print(cars.index)
+
+import statsmodels.formula.api as smf
+
+reg=smf.ols('conso~cylindree+puissance+poids', data=cars)
+print(dir(reg))
+
+#lancement des calculs
+res=reg.fit()
+
+#liste des membres
+print (dir(res))
+
+print (res.summary())
+
+beginningtex = """\\documentclass{report}
+\\usepackage{booktabs}
+\\begin{document}"""
+endtex = "\end{document}"
+
+f = open('myreg.tex', 'w')
+f.write(beginningtex)
+f.write(res.summary().as_latex())
+f.write(endtex)
+f.close()
+
+import numpy as np
+R=np.array([[0,1,0,0],[0,0,1,0],[0,0,0,1]])
+print (res.f_test(R))
+
+import statsmodels.api as sm
+JB,JBpv, skw, kurt =sm.stats.stattools.jarque_bera(res.resid)
+print(JB,JBpv,skw, kurt)
+
+
+
