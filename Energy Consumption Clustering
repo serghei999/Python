@@ -1,0 +1,71 @@
+import os
+os.chdir("D:\Projects\Python\Scripts old")
+import pandas as pd
+#On importe l'échantillon de 200 observations (200 minutes)
+data=pd.read_csv('conso.csv', sep=";")
+print(data)
+# Le modèle de régression OLS
+import statsmodels.formula.api as smf
+reg=smf.ols('Global_active_power~Global_reactive_power+Voltage+Global_intensity+Sub_metering_1+Sub_metering_2+Sub_metering_3',data=data)
+res=reg.fit()
+print(dir(res))
+print(res.summary())
+# Sub_metering_1 a été exclu du à la multicollinéarité
+# Commentaire du modèle de régression:
+
+# On a estimé l'impact des variables sur la consommation globale.
+#On constate que les variables Sub_metering_2 et Sub_metering_3 ont bien un impact
+#sur la consommation globale.
+
+import numpy as np
+import matplotlib.pyplot as plt
+Global_active_power=np.array(data['Global_active_power'])
+Global_reactive_power=np.array(data['Global_reactive_power'])
+Voltage=np.array(data['Voltage'])
+Global_intensity=np.array(data['Global_intensity'])
+Sub_metering_1=np.array(data['Sub_metering_1'])
+Sub_metering_2=np.array(data['Sub_metering_2'])
+Sub_metering_3=np.array(data['Sub_metering_3'])
+
+plt.plot(Global_active_power)
+plt.title('Global_active_power')
+plt.show()
+plt.plot(Global_reactive_power)
+plt.title('Global_reactive_power')
+plt.show()
+plt.plot(Voltage)
+plt.title('Voltage')
+plt.show()
+plt.plot(Sub_metering_1)
+plt.title('Sub_metering_1')
+plt.show()
+plt.plot(Sub_metering_2)
+plt.title('Sub_metering_2')
+plt.show()
+#On peut apercevoir des pics, qui reflétent l'accroissement de la consommation d'énergie
+#en fonction de la puissance des appareils.
+plt.plot(Sub_metering_3)
+plt.title('Sub_metering_3')
+plt.show()
+
+# La consommation totale des appareils dans les chambres 1 et 2
+sum(Sub_metering_2)
+sum(Sub_metering_3)
+
+#Clustering
+
+data2=pd.read_csv('conso2.csv', sep=";")
+print(data2)
+plt.scatter(data2['Global_active_power'],data2['Sub_metering_2'])
+plt.show()
+
+
+from sklearn.cluster import KMeans
+kmeans=KMeans(2)
+kmeans.fit(data2)
+clusters=data2.copy()
+clusters['cluster_pred']=kmeans.fit_predict(data2)
+plt.scatter(clusters['Global_active_power'],clusters['Sub_metering_2'],c=clusters['cluster_pred'],cmap='rainbow')
+plt.xlabel('Global_active_power')
+plt.ylabel('Sub_metering_2')
+plt.show()
