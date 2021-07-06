@@ -1,0 +1,21 @@
+t=[1,2,5,6,7,15,17,18,36,32,52,14,38]
+rech=38
+d=0
+f=len(t)-1
+
+while True:
+    m=int((d+f)/2)
+    print("d=",d," f=",f,", m=",m," t[m]=", t[m])
+    
+    if rech>t[m]:
+        d=m+1
+    else:
+        d=m-1
+    if not (d<=f and rech !=t[m]):
+        break
+        
+if t[m]==rech:
+    print(rech," trouvé à la position", m)
+else:
+    print(rech," n'a pas été trouvé")
+    
