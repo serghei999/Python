@@ -1,0 +1,25 @@
+"""module multipli contenant la fonction table"""
+
+import os
+
+def table(nb, max=10):
+    """Fonction affichant la table de multiplication par nb de
+    1 * nb jusqu'à max * nb"""
+    i = 0
+    while i < max:
+        print(i + 1, "*", nb, "=", (i + 1) * nb)
+        i += 1
+
+# test de la fonction table
+if __name__ == "__main__":
+    table(1)
+    table(2)
+    table(3)
+    table(4)
+    table(5)
+    table(6)
+    table(7)
+    table(8)
+    table(9)
+    table(10)
+    os.system("pause")
