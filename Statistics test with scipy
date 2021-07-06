@@ -1,0 +1,71 @@
+
+
+import numpy as np
+import scipy.stats as stat
+
+#treated
+dt = np.array([24,43,58,71,43,49,61,44,67,49,53,56,59,52,62,54,57,33,46,43,57])
+
+#control
+dc = np.array([42,43,55,26,62,37,33,41,19,54,20,85,46,10,17,60,53,42,37,42,55,28,48])
+
+#t-test variances égales
+print(stat.ttest_ind(dt,dc))
+
+#t-test de Welch
+print(stat.ttest_ind(dt,dc,equal_var=False))
+
+#test de Mann-Whitney - correction de continuité
+print(stat.mannwhitneyu(dt,dc))
+
+#test de Bartlett
+print(stat.bartlett(dt,dc))
+
+#test de Ansari Bradley
+print(stat.ansari(dt,dc))
+
+#test de Levene
+print(stat.levene(dt,dc))
+
+#test de Kolomogorov-Smirnov
+print(stat.ks_2samp(dt,dc))
+
+#paired samples test
+d1968 = np.array([0.42,0.5,0.52,0.45,0.43,0.55,0.45,0.34,0.45,0.54,0.42,0.51,0.49,0.54,0.5,0.58,0.49,0.56,0.63])
+d1972 = np.array([0.45,0.5,0.52,0.45,0.46,0.55,0.60,0.49,0.35,0.55,0.52,0.53,0.57,0.53,0.59,0.64,0.5,0.57,0.64])
+
+#t-test related samples
+print(stat.ttest_rel(d1968,d1972))
+
+#test des rangs signés
+print(stat.wilcoxon(d1968,d1972))
+
+#corrélation et régression
+dalc = np.array([6.47,6.13,6.19,4.89,5.63,4.52,5.89,4.79,5.27,6.08])
+dtob = np.array([4.03,3.76,3.77,3.34,3.47,2.92,3.2,2.71,3.53,4.51])
+
+#corrélation de Pearson
+print(stat.pearsonr(dalc,dtob))
+
+#corrélation de Spearman - basé sur les rangs
+print(stat.spearmanr(dalc,dtob))
+
+#tau de Kendall - concordance et discordance
+print(stat.kendalltau(dalc,dtob))
+
+#régression
+print(stat.linregress(dalc,dtob))
+
+#Sodium - test K échantillons indép.
+dbeef = np.array([495,477,425,322,482,587,370,322,479,375,330,300,386,401,645,440,317,319,298,253])
+dmeat = np.array([458,506,473,545,496,360,387,386,507,393,405,372,144,511,405,428,339])
+dpoultry = np.array([430,375,396,383,387,542,359,357,528,513,426,513,358,581,588,522,545])
+
+#test égalité des dispersions (variance)
+print(stat.levene(dbeef,dmeat,dpoultry))
+
+#ANOVA à 1 facteur - comparaison des moyennes
+print(stat.f_oneway(dbeef,dmeat,dpoultry))
+
+#Test de Kruskal-Wallis
+print(stat.kruskal(dbeef,dmeat,dpoultry))
