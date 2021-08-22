@@ -1,0 +1,25 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import csv
+data=pd.read_csv("D:\Projects\Python\Bitcoin\BTCUSD.csv",sep=";")
+data.head()
+data.describe()
+
+btc=np.array(data['BTC'])
+eth=np.array(data['ETH'])
+#transformer en log népérien
+lbtc=np.log(btc)
+leth=np.log(eth)
+
+#afficher
+plt.plot(lbtc)
+plt.plot(leth)
+plt.show()
+
+#Regression OLS
+import statsmodels.formula.api as smf
+reg=smf.ols('leth~lbtc',data=data)
+res=reg.fit()
+print(dir(res))
+print(res.summary())
