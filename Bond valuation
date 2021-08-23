@@ -1,0 +1,47 @@
+Modélisation des taux d’intérêt fixe des obligations
+Considérons l’obligation hypothétique avec la valeur faciale égale à 100, qui paie un coupon semi-annuel de 6% le 15 Janvier, 2015, et atteint la maturité le 15 Janvier 2016. L’obligation paiera le coupon le 15 Juillet 2015 et le 15 Janvier 2016. La valeur nominale de 100 sera aussi payée le 15 Janvier 2016.
+Pour faire les choses simples, assumons que nous connaissons les taux d’intérêt spot des bons de Trésor du 15 Janvier 2015. Le taux d’intérêt spot annualisés sont de 0.5% pour les 6 mois et de 0.7% pour 1 an. Nous allons calculer la valeur actualisée de l’obligation.
+3/pow(1+0.005, 0.5) + (100 + 3)/(1+0.007)
+Le calcul réalisé dans le QuantLib.
+
+import QuantLib as ql
+todaysDate = ql.Date(15, 1, 2015)
+ql.Settings.instance().evaluationDate = todaysDate
+spotDates = [ql.Date(15, 1, 2015), ql.Date(15, 7, 2015), ql.Date(15, 1, 2016)]
+spotRates = [0.0, 0.005, 0.007]
+dayCount = ql.Thirty360()
+calendar = ql.UnitedStates()
+interpolation = ql.Linear()
+compounding = ql.Compounded
+compoundingFrequency = ql.Annual
+spotCurve = ql.ZeroCurve(spotDates, spotRates, dayCount, calendar, interpolation, compounding, compoundingFrequency)
+spotCurveHandle = ql.YieldTermStructureHandle(spotCurve)
+
+#Ainsi nous avons créé la courbe des taux. Nous allons construire les taux #d’intérêt fixes.
+issueDate = ql.Date(15, 1, 2015)
+maturityDate = ql.Date(15, 1, 2016)
+tenor = ql.Period(ql.Semiannual)
+calendar = ql.UnitedStates()
+bussinessConvention = ql.Unadjusted
+dateGeneration = ql.DateGeneration.Backward
+monthEnd = False
+schedule = ql.Schedule (issueDate, maturityDate, tenor, calendar, bussinessConvention,
+                            bussinessConvention , dateGeneration, monthEnd)
+list(schedule)
+
+# Créons le coupon.
+dayCount = ql.Thirty360()
+couponRate = .06
+coupons = [couponRate]
+
+# Créons l’obligation à taux fixe
+settlementDays = 0
+faceValue = 100
+fixedRateBond = ql.FixedRateBond(settlementDays, faceValue, schedule, coupons, dayCount)
+
+# Le calcul de l’obligation
+bondEngine = ql.DiscountingBondEngine(spotCurveHandle)
+fixedRateBond.setPricingEngine(bondEngine)
+
+# Le prix de l’obligation
+fixedRateBond.NPV()
